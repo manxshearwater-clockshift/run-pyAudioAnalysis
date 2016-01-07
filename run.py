@@ -3,7 +3,7 @@ import profile
 from pyAudioAnalysis import audioTrainTest as aT
 from pyAudioAnalysis import audioSegmentation as aS
 
-aT.featureAndTrain(["Fragments/Shuffle/","Fragments/Silence/","Fragments/Micbeep/"], 1.0, 1.0, aT.shortTermWindow, aT.shortTermStep, "knn", "manxknn")
+aT.featureAndTrain(["Fragments/Shuffle/","Fragments/Silence/","Fragments/Micbeep/","Fragments/Call/"], 1.0, 1.0, aT.shortTermWindow, aT.shortTermStep, "knn", "manxknn")
 
 def run_example(test_file, model_file, segments_file):
 	[flagsInd, classesAll, acc] = aS.mtFileClassification(test_file, model_file, "knn", True, segments_file)
