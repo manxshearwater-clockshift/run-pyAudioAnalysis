@@ -55,5 +55,6 @@ def main():
 
     queue.join()
 
-main()
-print "Elapsed Time: %s" % (time.time() - start)
+if __name__ == "__main__":
+    main()
+    print "Elapsed Time: %s" % (time.time() - start)

@@ -18,5 +18,5 @@ EG: aT.featureAndTrain(["Fragments/Shuffle/","Fragments/Silence/","Fragments/Mic
     1.0, 1.0, aT.shortTermWindow, aT.shortTermStep, "knn", "manxknn")
 
 '''
-
-aT.featureAndTrain(args.directories, 1.0, 1.0, aT.shortTermWindow, aT.shortTermStep, "knn", modelname)
+if __name__ == "__main__":
+    aT.featureAndTrain(args.directories, 1.0, 1.0, aT.shortTermWindow, aT.shortTermStep, "knn", modelname)
