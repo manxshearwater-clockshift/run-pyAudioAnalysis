@@ -11,6 +11,8 @@ queue = multiprocessing.JoinableQueue()
 parser = argparse.ArgumentParser()
 parser.add_argument("directory", help="set the directory to analyze",
                     type=str)
+parser.add_argument("model", help="the knn model to use",
+                    type=str)
 parser.add_argument("--processes", help="set the amount of processes to use", type=int)
 args = parser.parse_args()
 sound_files = os.listdir(args.directory)
@@ -24,7 +26,7 @@ def set_amount_processes():
     return processes
 
 def save_out(test_file):
-    [flags_ind, classes_all, acc] = aS.mtFileClassification(test_file, "manxknn", "knn", False)
+    [flags_ind, classes_all, acc] = aS.mtFileClassification(test_file, args.model, "knn", False)
     np.save(test_file, flags_ind)
     return classes_all
 
