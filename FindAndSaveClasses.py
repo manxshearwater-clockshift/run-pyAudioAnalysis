@@ -3,10 +3,25 @@ import numpy as np
 import time
 import os
 import multiprocessing
+import argparse
 
-root = "/home/yorick/ManxShearwaterProject/TESTpyAudioAnalysis/dir/"
-sound_files = os.listdir(root)
+
 queue = multiprocessing.JoinableQueue()
+
+parser = argparse.ArgumentParser()
+parser.add_argument("directory", help="set the directory to analyze",
+                    type=str)
+parser.add_argument("--processes", help="set the amount of processes to use", type=int)
+args = parser.parse_args()
+sound_files = os.listdir(args.directory)
+
+def set_amount_processes():
+    processes = 1
+    if multiprocessing.cpu_count() > 1:
+        processes = multiprocessing.cpu_count() - 1
+    if args.processes:
+        processes = args.processes
+    return processes
 
 def save_out(test_file):
     [flags_ind, classes_all, acc] = aS.mtFileClassification(test_file, "manxknn", "knn", False)
@@ -14,27 +29,29 @@ def save_out(test_file):
     return classes_all
 
 class ProcessSound(multiprocessing.Process):
-  def __init__(self, queue):
-    multiprocessing.Process.__init__(self)
-    self.queue = queue
+    def __init__(self, queue):
+        multiprocessing.Process.__init__(self)
+        self.queue = queue
 
-  def run(self):
-    while True:
-      soundfile = self.queue.get()
-      save_out(root + soundfile)
-      self.queue.task_done()
+    def run(self):
+        while True:
+            soundfile = self.queue.get()
+            save_out(args.directory + soundfile)
+            self.queue.task_done()
 
 start = time.time()
 def main():
-  for _ in range(5):
-    t = ProcessSound(queue)
-    t.daemon(True)
-    t.start()
+    processes = set_amount_processes()
+    print("Started with " + str(processes))
+    for _ in range(processes):
+        t = ProcessSound(queue)
+        t.daemon = True
+        t.start()
 
-  for soundfile in sound_files:
-    queue.put(soundfile)
+    for soundfile in sound_files:
+        queue.put(soundfile)
 
-  queue.join()
+    queue.join()
 
 main()
 print "Elapsed Time: %s" % (time.time() - start)
