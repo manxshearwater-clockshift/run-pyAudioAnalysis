@@ -4,7 +4,7 @@ import time
 import os
 import multiprocessing
 
-root = "/home/yorick/ManxShearwaterProject/TESTpyAudioAnalysis/dir/4/"
+root = "/home/yorick/ManxShearwaterProject/TESTpyAudioAnalysis/dir/"
 sound_files = os.listdir(root)
 queue = multiprocessing.JoinableQueue()
 
@@ -13,7 +13,7 @@ def save_out(test_file):
     np.save(test_file, flags_ind)
     return classes_all
 
-class ThreadUrl(multiprocessing.Process):
+class ProcessSound(multiprocessing.Process):
   def __init__(self, queue):
     multiprocessing.Process.__init__(self)
     self.queue = queue
@@ -27,7 +27,8 @@ class ThreadUrl(multiprocessing.Process):
 start = time.time()
 def main():
   for _ in range(5):
-    t = ThreadUrl(queue)
+    t = ProcessSound(queue)
+    t.daemon(True)
     t.start()
 
   for soundfile in sound_files:
