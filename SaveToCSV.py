@@ -43,13 +43,11 @@ def load_classes_from_file(filename):
 def create_new_csv_file():
     with open(csv_file_name + '.csv', 'wb') as csvfile:
         csvwriter = csv.writer(csvfile, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
-        csvwriter.writerow(["date time", "class"])
-
+        csvwriter.writerow(["year", "month", "day", "hour", "minute", "second", "class"])
 
 def write_new_lines_for_file(date_time, nclasses):
     with open(csv_file_name + '.csv', 'ab') as csvfile:
         csvwriter = csv.writer(csvfile, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
-        csvwriter.writerow(["year", "month", "day", "hour", "minute", "second", "class"])
         for nclass in nclasses:
             csvwriter.writerow([date_time.year, date_time.month, date_time.day, date_time.hour,
                                 date_time.minute, date_time.second, nclass])
