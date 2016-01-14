@@ -25,13 +25,13 @@ def extract_date_from_filename(filename):
     date = split_filename[4]
     time = split_filename[6][:-4]
 
-    year = int(str(date)[:2])
-    month = int(str(date)[2:4])
-    day = int(str(date)[4:6])
+    year = int(date[:2])
+    month = int(date[2:4])
+    day = int(date[4:6])
 
-    hours = int(str(time)[:2])
-    minutes = int(str(time)[2:4])
-    seconds = int(str(time)[4:6])
+    hours = int(time[:2])
+    minutes = int(time[2:4])
+    seconds = int(time[4:6])
 
     date_time = datetime.datetime(2000 + year, month, day, hours, minutes, seconds)
 
@@ -49,9 +49,10 @@ def create_new_csv_file():
 def write_new_lines_for_file(date_time, nclasses):
     with open(csv_file_name + '.csv', 'ab') as csvfile:
         csvwriter = csv.writer(csvfile, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
-        csvwriter.writerow(["date time", "class"])
+        csvwriter.writerow(["year", "month", "day", "hour", "minute", "second", "class"])
         for nclass in nclasses:
-            csvwriter.writerow([date_time, nclass])
+            csvwriter.writerow([date_time.year, date_time.month, date_time.day, date_time.hour,
+                                date_time.minute, date_time.second, nclass])
             date_time = increment_date_time(date_time)
 
 def increment_date_time(date_time):
