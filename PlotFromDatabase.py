@@ -2,24 +2,15 @@ import DatabaseHelper as dh
 import matplotlib.pyplot as pl
 import numpy as np
 
-def extract_shuffles(tuple_list, class_nr):
-    count = 0
-    for tuple in tuple_list:
-        if class_nr == tuple[0]:
-            count += 1
-    return count
-
 def one_day_shuffles_per_hour(bird, day):
     listx = []
     for hour in range(0, 24):
-        tuple_list = dh.get_one_hour(bird, day, hour)
 
         # classe voor shuffling per bird anders
         if bird == "b73":
-            amount_shuffles = extract_shuffles(tuple_list, 3)
-
+            amount_shuffles = dh.get_one_hour(bird, day, hour, 3)
         else :
-            amount_shuffles = extract_shuffles(tuple_list, 2)
+            amount_shuffles = dh.get_one_hour(bird, day, hour, 2)
         listx.append(amount_shuffles)
     return listx
 
@@ -41,7 +32,7 @@ def avlist(list_):
 
     return avlist
 
-def plot_average_day(listx, listy):
+def plot_average_day(listx, listy, bird):
     listxx = avlist(listx)
     listyy = avlist(listy)
 
@@ -53,6 +44,9 @@ def plot_average_day(listx, listy):
     box = ax.get_position()
     ax.set_position([box.x0,box.y0,box.width * 0.8,box.height])
     ax.legend(loc="center left",bbox_to_anchor=(1,0.5))
+    pl.xlabel("hours")
+    pl.ylabel("amount of shuffles")
+    pl.title(bird)
     pl.show()
 
 def plot_all_days(bird, start_day, stop_day):
@@ -66,6 +60,9 @@ def plot_all_days(bird, start_day, stop_day):
     box = ax.get_position()
     ax.set_position([box.x0,box.y0,box.width * 0.8,box.height])
     ax.legend(loc="center left",bbox_to_anchor=(1,0.5))
+    pl.xlabel("hours")
+    pl.ylabel("amount of shuffles")
+    pl.title(bird)
     pl.show()
 
 def plot_compare(bird):
@@ -82,7 +79,7 @@ def plot_compare(bird):
         running_mean_list1 = running_mean(no_running_mean_list1, 5)
         total_list1.append(running_mean_list1)
 
-    plot_average_day(total_list,total_list1 )
+    plot_average_day(total_list,total_list1, bird )
 
 
 

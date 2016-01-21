@@ -17,9 +17,8 @@ def create_db():
     conn = sqlite3.connect(DB_NAME)
     c = conn.cursor()
     c.execute("SELECT * FROM sqlite_master WHERE type='table' AND name='TABLE_BIRDS'")
-    print(c.fetchall())
-    if c.arraysize < 2:
-        c.execute("CREATE TABLE TABLE_BIRDS (BIRD TEXT, YEAR INTEGER, MONTH INTEGER, DAY INTEGER, HOUR INTEGER, "
+    #if c.arraysize < 2:
+    c.execute("CREATE TABLE TABLE_BIRDS (BIRD TEXT, YEAR INTEGER, MONTH INTEGER, DAY INTEGER, HOUR INTEGER, "
                   "MINUTE INTEGER, SECOND INTEGER, CLASS INTEGER)")
     conn.commit()
     conn.close()
@@ -52,10 +51,11 @@ def get_one_day(bird_table_name, daynr):
     conn.close()
     return day
 
-def get_one_hour(bird, daynr, hour):
+def get_one_hour(bird, daynr, hour, klass, tablename):
     conn = sqlite3.connect(DB_NAME)
     c = conn.cursor()
-    c.execute("SELECT class FROM TABLE_BIRDS WHERE DAY=? AND HOUR=?", (daynr, hour, ))
+    c.execute("SELECT count(*) FROM " + tablename + " WHERE DAY=? AND HOUR=? AND BIRD=? AND CLASS=?",
+              (daynr, hour, bird, klass))
     hour = c.fetchall()
     conn.close()
     return hour
