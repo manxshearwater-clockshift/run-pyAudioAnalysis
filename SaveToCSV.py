@@ -8,7 +8,7 @@ import argparse
 parser = argparse.ArgumentParser()
 parser.add_argument("directory", help="the directory with npy files",
                     type=str)
-parser.add_argument("--name", help="the knn model to use",
+parser.add_argument("--name", help="the name to give the output csv",
                     type=str)
 args = parser.parse_args()
 
