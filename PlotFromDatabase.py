@@ -19,9 +19,12 @@ def one_day_shuffles_per_hour(bird, day):
             continue
         # classe voor shuffling per bird anders
         if bird == "b73":
-            amount_shuffles = extract_shuffles(tuple_list, 2)
-        else :
-            amount_shuffles = extract_shuffles(tuple_list, 2)
+            shuffle_class = 0
+        elif bird == "DB4":
+            shuffle_class = 1
+        else:
+            shuffle_class = 3
+        amount_shuffles = extract_shuffles(tuple_list, shuffle_class)
         normalized_shuffles = (float(amount_shuffles) / float(total_events)) * 3600
         listx[hour] = (normalized_shuffles)
     return listx
@@ -42,7 +45,6 @@ def running_mean(x, N):
                 q = y+z
             tempList[N-z] = x[p]
             tempList[N+z] = x[q]
-        print(tempList)
         meanList[y] = np.mean(tempList)
     return meanList
 
