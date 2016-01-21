@@ -87,10 +87,6 @@ def plot_compare(bird):
 
 
 if __name__ == '__main__':
-    dh.drop_db("TABLE_BIRDS")
-    dh.create_db()
-    dh.csv_to_db("b73.csv", "b73")
-
     input_bird = raw_input(("Which bird do you want to analyze(b73, b151, b179, DB4, DB20, DB30): \n"))
     input_string = raw_input(("Which graph do you want to plot? for unshifted(typ unshifted), shifted days(typ shifted), to compare shifted and unshifted(typ compare) \n"))
 
