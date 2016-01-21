@@ -14,17 +14,18 @@ SECOND = "second"
 CLASS = "class"
 
 def create_db():
-    conn = sqlite3.connect(DB_NAME, detect_types=sqlite3.PARSE_DECLTYPES)
+    conn = sqlite3.connect(DB_NAME)
     c = conn.cursor()
-    c.execute("SELECT count(*) FROM sqlite_master WHERE type='table' AND name='TABLE_BIRDS'")
-    if c.arraysize < 1:
+    c.execute("SELECT * FROM sqlite_master WHERE type='table' AND name='TABLE_BIRDS'")
+    print(c.fetchall())
+    if c.arraysize < 2:
         c.execute("CREATE TABLE TABLE_BIRDS (BIRD TEXT, YEAR INTEGER, MONTH INTEGER, DAY INTEGER, HOUR INTEGER, "
                   "MINUTE INTEGER, SECOND INTEGER, CLASS INTEGER)")
     conn.commit()
     conn.close()
 
-def drop_db(bird_table_name):
-    conn = sqlite3.connect(DB_NAME, detect_types=sqlite3.PARSE_DECLTYPES)
+def drop_db():
+    conn = sqlite3.connect(DB_NAME)
     c = conn.cursor()
     c.execute("DROP TABLE TABLE_BIRDS")
     conn.commit()
@@ -34,7 +35,7 @@ def csv_to_db(csvfilename, bird):
     with open(csvfilename, 'rb') as csvfile:
         reader = csv.reader(csvfile, delimiter=',')
         reader.next()  # skip header
-        conn = sqlite3.connect(DB_NAME, detect_types=sqlite3.PARSE_DECLTYPES)
+        conn = sqlite3.connect(DB_NAME)
         c = conn.cursor()
         for row in reader:
             dt = [row[0], row[1], row[2], row[3], row[4], row[5]]
@@ -44,23 +45,23 @@ def csv_to_db(csvfilename, bird):
         conn.close()
 
 def get_one_day(bird_table_name, daynr):
-    conn = sqlite3.connect(DB_NAME, detect_types=sqlite3.PARSE_DECLTYPES)
+    conn = sqlite3.connect(DB_NAME)
     c = conn.cursor()
-    c.execute("SELECT * FROM TABLE_BIRDS WHERE DAY=?", (daynr, ))
+    c.execute("SELECT class FROM TABLE_BIRDS WHERE DAY=?", (daynr, ))
     day = c.fetchall()
     conn.close()
     return day
 
 def get_one_hour(bird, daynr, hour):
-    conn = sqlite3.connect(DB_NAME, detect_types=sqlite3.PARSE_DECLTYPES)
+    conn = sqlite3.connect(DB_NAME)
     c = conn.cursor()
-    c.execute("SELECT * FROM TABLE_BIRDS WHERE DAY=? AND HOUR=?", (daynr, hour, ))
+    c.execute("SELECT class FROM TABLE_BIRDS WHERE DAY=? AND HOUR=?", (daynr, hour, ))
     hour = c.fetchall()
     conn.close()
     return hour
 
 def get_all_from_bird(bird):
-    conn = sqlite3.connect(DB_NAME, detect_types=sqlite3.PARSE_DECLTYPES)
+    conn = sqlite3.connect(DB_NAME)
     c = conn.cursor()
     c.execute("SELECT * FROM TABLE_BIRDS")
     bird = c.fetchall()
