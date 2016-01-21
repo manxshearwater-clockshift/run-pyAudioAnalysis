@@ -2,23 +2,49 @@ import DatabaseHelper as dh
 import matplotlib.pyplot as pl
 import numpy as np
 
-def one_day_shuffles_per_hour(bird, day):
-    listx = []
-    for hour in range(0, 24):
+def extract_shuffles(tuple_list, class_nr):
+    count = 0
+    for tuple in tuple_list:
+        if class_nr == tuple[0]:
+            count += 1
+    return count
 
+def one_day_shuffles_per_hour(bird, day):
+    listx = 24 * [0]
+    for hour in range(0, 24):
+        tuple_list = dh.get_one_hour(bird, day, hour)
+        total_events = len(tuple_list)
+        if total_events == 0:
+            print "No events at ", (day, hour)
+            continue
         # classe voor shuffling per bird anders
         if bird == "b73":
-            amount_shuffles = dh.get_one_hour(bird, day, hour, 3)
+            amount_shuffles = extract_shuffles(tuple_list, 2)
         else :
-            amount_shuffles = dh.get_one_hour(bird, day, hour, 2)
-        listx.append(amount_shuffles)
+            amount_shuffles = extract_shuffles(tuple_list, 2)
+        normalized_shuffles = (float(amount_shuffles) / float(total_events)) * 3600
+        listx[hour] = (normalized_shuffles)
     return listx
 
 def running_mean(x, N):
-    y = np.zeros((len(x),))
-    for ctr in range(len(x)):
-         y[ctr] = np.sum(x[ctr:(ctr+N)])
-    return y/N
+    meanList = np.zeros(len(x))
+    for y in range(len(x)):
+        tempList = np.zeros((N*2)+1)
+        tempList[N] = x[y]
+        for z in range(1, N+1):
+            if(y-z)<0:
+                p = len(x)-np.abs(y-z)
+            else:
+                p = y-z
+            if(y+z)>=len(x):
+                q = y+z-len(x)
+            else:
+                q = y+z
+            tempList[N-z] = x[p]
+            tempList[N+z] = x[q]
+        print(tempList)
+        meanList[y] = np.mean(tempList)
+    return meanList
 
 def plot_one_day(listx, day, color):
     pl.plot(list(range(0, len(listx))), listx, color, label="Day " + str(day))
@@ -54,7 +80,7 @@ def plot_all_days(bird, start_day, stop_day):
     ax = pl.subplot(111)
     for day in range(start_day, stop_day + 1):
         no_running_mean_list = one_day_shuffles_per_hour(bird, day)
-        running_mean_list = running_mean(no_running_mean_list, 5)
+        running_mean_list = running_mean(no_running_mean_list, 2)
         plot_one_day(running_mean_list, day, colors[day])
 
     box = ax.get_position()
@@ -71,12 +97,12 @@ def plot_compare(bird):
 
     for day in range(16, 22):
         no_running_mean_list = one_day_shuffles_per_hour(bird,day)
-        running_mean_list = running_mean(no_running_mean_list, 5)
+        running_mean_list = running_mean(no_running_mean_list, 2)
         total_list.append(running_mean_list)
 
     for day in range(22, 25):
         no_running_mean_list1 = one_day_shuffles_per_hour(bird, day)
-        running_mean_list1 = running_mean(no_running_mean_list1, 5)
+        running_mean_list1 = running_mean(no_running_mean_list1, 2)
         total_list1.append(running_mean_list1)
 
     plot_average_day(total_list,total_list1, bird )
@@ -84,7 +110,7 @@ def plot_compare(bird):
 
 
 if __name__ == '__main__':
-    input_bird = raw_input(("Which bird do you want to analyze(b73, b151, b179, DB4, DB20, DB30): \n"))
+    input_bird = raw_input(("Which bird do you want to analyze(b73,b174, b179, DB4, DB20, DB30): \n"))
     input_string = raw_input(("Which graph do you want to plot? for unshifted(typ unshifted), shifted days(typ shifted), to compare shifted and unshifted(typ compare) \n"))
 
     if input_string == "unshifted":
@@ -95,3 +121,5 @@ if __name__ == '__main__':
 
     if input_string == "compare":
         plot_compare(input_bird)
+
+    print("Shifts: b73-FAST, b174-FAST, b179-SOFT, DB4-FAST, DB20-FAST, DB30-SLOW")
