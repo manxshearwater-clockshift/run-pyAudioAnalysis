@@ -51,11 +51,11 @@ def get_one_day(bird_table_name, daynr):
     conn.close()
     return day
 
-def get_one_hour(bird, daynr, hour, klass, tablename):
+def get_one_hour(bird, daynr, hour):
     conn = sqlite3.connect(DB_NAME)
     c = conn.cursor()
-    c.execute("SELECT count(*) FROM " + tablename + " WHERE DAY=? AND HOUR=? AND BIRD=? AND CLASS=?",
-              (daynr, hour, bird, klass))
+    c.execute("SELECT CLASS FROM TABLE_BIRDS WHERE DAY=? AND HOUR=? AND BIRD=?",
+              (daynr, hour, bird))
     hour = c.fetchall()
     conn.close()
     return hour
