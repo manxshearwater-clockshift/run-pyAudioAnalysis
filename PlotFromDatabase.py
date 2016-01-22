@@ -64,6 +64,8 @@ def plot_average_day(listx, listy, bird):
     listxx = avlist(listx)
     listyy = avlist(listy)
 
+    listyy = normalize_running_means(listyy, listxx)
+
     ax = pl.subplot(111)
 
     pl.plot(list(range(0, len(listxx))), listxx, "blue", label="unshifted days")
@@ -109,6 +111,15 @@ def plot_compare(bird):
 
     plot_average_day(total_list,total_list1, bird )
 
+def normalize_running_means(shifted_list, unshifted_list):
+    standard = sum(unshifted_list)
+    total_in_shifted_list = sum(shifted_list)
+    for i in range(0, len(shifted_list)):
+        print(shifted_list[i])
+        shifted_list[i] = (shifted_list[i] * standard) / total_in_shifted_list
+        print(shifted_list[i])
+    return shifted_list
+
 
 
 if __name__ == '__main__':
@@ -125,3 +136,4 @@ if __name__ == '__main__':
         plot_compare(input_bird)
 
     print("Shifts: b73-FAST, b174-FAST, b179-SOFT, DB4-FAST, DB20-FAST, DB30-SLOW")
+
