@@ -111,6 +111,23 @@ def plot_compare(bird):
 
     plot_average_day(total_list,total_list1, bird )
 
+def compare_seperateshifted(bird):
+    total_list =[]
+    for day in range(16, 22):
+        no_running_mean_list = one_day_shuffles_per_hour(bird, day)
+        running_mean_list = running_mean(no_running_mean_list, 2)
+        total_list.append(running_mean_list)
+    avlists = avlist(total_list)
+    pl.plot(list(range(0, len(avlists))), avlists, "blue", label="unshifted days")
+
+    colors = {22: 'r', 23: 'g', 24:'black'}
+    for day in range(22, 25):
+        no_running_mean_list = one_day_shuffles_per_hour(bird, day)
+        running_mean_list = running_mean(no_running_mean_list, 2)
+        plot_one_day(running_mean_list, day, colors[day])
+
+    pl.show()
+
 def normalize_running_means(shifted_list, unshifted_list):
     standard = sum(unshifted_list)
     total_in_shifted_list = sum(shifted_list)
@@ -123,7 +140,7 @@ def normalize_running_means(shifted_list, unshifted_list):
 
 
 if __name__ == '__main__':
-    input_bird = raw_input(("Which bird do you want to analyze(b73,b174, b179, DB4, DB20, DB30): \n"))
+    input_bird = raw_input(("Which bird do you want to analyze(b73, b174, b179, DB4, DB20, DB30): \n"))
     input_string = raw_input(("Which graph do you want to plot? for unshifted(typ unshifted), shifted days(typ shifted), to compare shifted and unshifted(typ compare) \n"))
 
     if input_string == "unshifted":
@@ -134,6 +151,9 @@ if __name__ == '__main__':
 
     if input_string == "compare":
         plot_compare(input_bird)
+
+    if input_string == "compare_seperateshifted":
+        compare_seperateshifted(input_bird)
 
     print("Shifts: b73-FAST, b174-FAST, b179-SOFT, DB4-FAST, DB20-FAST, DB30-SLOW")
 
