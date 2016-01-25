@@ -18,11 +18,11 @@ def shift_list(list_, n, sort_shift):
     
     # if fast biological clock back
     if sort_shift == "fast":
-        shifted_list = np.roll(list_, -n)
+        shifted_list = np.roll(list_, n)
     
     # if slow biological clock forward
     elif sort_shift == "slow":
-        shifted_list = np.roll(list_,n)
+        shifted_list = np.roll(list_,-n)
     
     else: 
         print "something went wrong"
@@ -178,7 +178,7 @@ def main():
     shifted_day = 0
     for shifted_day in range(shifted_day, 3):
         
-        print "Test for shifted day nr: ", shifted_day
+        print "Test for shifted day nr: ", shifted_day + 1
         print ""
         
         shifted_x = shifted_total[shifted_day]
