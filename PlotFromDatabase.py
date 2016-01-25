@@ -126,6 +126,14 @@ def compare_seperateshifted(bird):
         running_mean_list = running_mean(no_running_mean_list, 2)
         plot_one_day(running_mean_list, day, colors[day])
 
+    ax = pl.subplot(111)
+    box = ax.get_position()
+    ax.set_position([box.x0,box.y0,box.width * 0.8, box.height])
+    ax.legend(loc="center left", bbox_to_anchor=(1, 0.5))
+    pl.xlabel("hours")
+    pl.ylabel("amount of shuffles")
+    pl.title(bird)
+
     pl.show()
 
 def normalize_running_means(shifted_list, unshifted_list):
