@@ -17,27 +17,13 @@ def anomaly_list(X_train, X_test):
 # make list of all six normal days per hour
 # list = [[uur0_day1, uur0_day2,....etc., uur0_day6], [uur1_day1, uur1_day2,....etc., uur1_day6], ...etc tot 24 uur ]
 def get_lists_perhour_unshifted_days(bird):
-    total_shuffles_x_hours = []
-
-    for day in range(16, 22):
-        shuffles_day = one_day_shuffles_per_hour(bird, day)
-        # running_mean_shuffles = running_mean(shuffles_day, 2)
-        total_shuffles_x_hours.append(shuffles_day)
-
-    return total_shuffles_x_hours
+    return [one_day_shuffles_per_hour(bird, day) for day in range(16, 22)]
 
 
 # make list for shifted days with x is hours
 # list = [[uur0,uur1,...,uur24], [etc..] ]
 def get_lists_perhour_shifted_days(bird):
-    total_shuffles_x_hours = []
-
-    for day in range(22, 25):
-        shuffles_day = one_day_shuffles_per_hour(bird, day)
-        # running_mean_shuffles = running_mean(shuffles_day, 2)
-        total_shuffles_x_hours.append(shuffles_day)
-
-    return total_shuffles_x_hours
+    return [one_day_shuffles_per_hour(bird, day) for day in range(22, 25)]
 
 
 # copied from plotscript
@@ -77,11 +63,9 @@ def shift_list(list_, n, sort_shift):
     # if fast biological clock back
     if sort_shift == "fast":
         shifted_list = np.roll(list_, n)
-
     # if slow biological clock forward
     elif sort_shift == "slow":
         shifted_list = np.roll(list_, -n)
-
     else:
         print "something went wrong"
 
@@ -90,14 +74,7 @@ def shift_list(list_, n, sort_shift):
 
 # shift all lists
 def shift_all_lists(lists, n, sort_shift):
-    i = 0
-    length = len(lists)
-    total_list = []
-
-    for i in range(i, length):
-        shifted_list = shift_list(lists[i], n, sort_shift)
-        total_list.append(shifted_list)
-
+    total_list = [shift_list(lists[i], n, sort_shift) for i in range(len(lists))]
     return total_list
 
 
@@ -105,22 +82,16 @@ def shift_all_lists(lists, n, sort_shift):
 def slow_or_fast(bird):
     if bird == "b73":
         sort_shift = "fast"
-
     elif bird == "b174":
         sort_shift = "fast"
-
     elif bird == "DB4":
         sort_shift = "fast"
-
     elif bird == "DB20":
         sort_shift = "fast"
-
     elif bird == "b179":
         sort_shift = "slow"
-
     elif bird == "DB30":
         sort_shift = "slow"
-
     else:
         print "Bird does not exist"
 
@@ -141,20 +112,15 @@ def main():
 
     # get anomaly prediction
 
-    j = 0
-    for j in range(j, max_shift + 1):
+    for j in range(max_shift + 1):
         print "****************************"
         print "Test for shift: ", j + 1, "hour"
         X_test_shifted = shift_all_lists(X_test, j, sort_shift)
         X_test_best = np.array(X_test_shifted)
-        anomalylist = []
         anomalylist = anomaly_list(X_train, X_test_best)
-        i = 0
-        for i in range(i, len(anomalylist)):
-            check = anomalylist[i]
-
-            if check == "anomaly":
-                print "This day is an outlier: ", i + 22
+        for id, _ in enumerate(anomalylist):
+            if anomalylist[id] == "anomaly":
+                print "This day is an outlier: ", id + 22
 
 
 if __name__ == '__main__':
