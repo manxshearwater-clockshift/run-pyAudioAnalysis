@@ -62,8 +62,10 @@ def avlist(list_):
     minlength = min(len(x) for x in list_)
     for i in range(minlength):
         elements = [elem[i] for elem in list_]
-        avlist.append(sum(elements)/ len(elements))
-
+        # Remove empty hours assumes there is at least one shuffle
+        # in an hour for it to be a valid recording
+        elements = [value for value in elements if value != 0]
+        avlist.append(sum(elements) / len(elements))
     return avlist
 
 
@@ -72,6 +74,9 @@ def minlist(list_):
     minlength = min(len(x) for x in list_)
     for i in range(minlength):
         elements = [elem[i] for elem in list_]
+        # Remove empty hours assumes there is at least one shuffle
+        # in an hour for it to be a valid recording
+        elements = [value for value in elements if value != 0]
         minslist.append(min(elements))
     return minslist
 
