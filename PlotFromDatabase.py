@@ -54,7 +54,7 @@ def running_mean(x, N):
 
 
 def plot_one_day(listx, day, color):
-    pl.plot(list(range(0, len(listx))), listx, color, label="Day " + str(day))
+    pl.plot(list(range(0, len(listx))), listx, color, label="Day " + str(day) + " shifted")
 
 
 def avlist(list_):
@@ -94,12 +94,12 @@ def plot_average_day(listx, listy, bird):
     listxx = avlist(listx)
     listyy = avlist(listy)
 
-    listyy = normalize_running_means(listyy, listxx)
+    listyy = normalize_surface(listyy, listxx)
 
     ax = pl.subplot(111)
 
-    pl.plot(list(range(0, len(listxx))), listxx, "blue", label="unshifted days")
-    pl.plot(list(range(0, len(listyy))), listyy,"red", label="shifted days")
+    pl.plot(list(range(0, len(listxx))), listxx, "blue", label="Average unshifted days")
+    pl.plot(list(range(0, len(listyy))), listyy,"red", label="Average shifted days")
 
     box = ax.get_position()
     ax.set_position([box.x0,box.y0,box.width * 0.8,box.height])
@@ -150,13 +150,23 @@ def compare_seperateshifted(bird):
         running_mean_list = running_mean(no_running_mean_list, 2)
         total_list.append(running_mean_list)
     avlists = avlist(total_list)
-    pl.plot(list(range(0, len(avlists))), avlists, "blue", label="unshifted days")
+    pl.plot(list(range(0, len(avlists))), avlists, "green", label="Average unshifted days", linewidth=2.5)
 
-    colors = {22: 'r', 23: 'g', 24:'black'}
     for day in range(22, 25):
         no_running_mean_list = one_day_shuffles_per_hour(bird, day)
         running_mean_list = running_mean(no_running_mean_list, 2)
-        plot_one_day(running_mean_list, day, colors[day])
+        total_list.append(running_mean_list)
+    avlists = avlist(total_list)
+    pl.plot(list(range(0, len(avlists))), avlists, "red", label="Average shifted days", linewidth=2.5)
+
+    colors = {22: 'dimgray', 23: 'royalblue', 24:'black'}
+    for day in range(22, 25):
+        no_running_mean_list = one_day_shuffles_per_hour(bird, day)
+        running_mean_list = running_mean(no_running_mean_list, 2)
+        if 0 in running_mean_list:
+            continue
+        running_mean_list_normalized_surface = normalize_surface(running_mean_list, avlists)
+        plot_one_day(running_mean_list_normalized_surface, day, colors[day])
 
     ax = pl.subplot(111)
     box = ax.get_position()
@@ -176,19 +186,13 @@ def compare_nonshifted_minmax(bird):
         running_mean_list = running_mean(no_running_mean_list, 2)
         total_list.append(running_mean_list)
     avlists = avlist(total_list)
-    pl.plot(list(range(0, len(avlists))), avlists, "black", label="unshifted days")
+    pl.plot(list(range(0, len(avlists))), avlists, "black", label="Average unshifted days")
 
     minslist = minlist(total_list)
-    pl.plot(list(range(0, len(minslist))), minslist, "blue", label="min")
+    pl.plot(list(range(0, len(minslist))), minslist, "blue", label="Mininmal unshifted")
 
     maxlist = maxlistf(total_list)
-    pl.plot(list(range(0, len(maxlist))), maxlist, "red", label="max")
-
-    colors = {22: 'orange', 23: 'grey', 24: 'darkmagenta'}
-    for day in range(22, 25):
-        no_running_mean_list = one_day_shuffles_per_hour(bird, day)
-        running_mean_list = running_mean(no_running_mean_list, 2)
-        plot_one_day(running_mean_list, day, colors[day])
+    pl.plot(list(range(0, len(maxlist))), maxlist, "red", label="Maximal unshifted")
 
     ax = pl.subplot(111)
     pl.fill_between(list(range(0, len(maxlist))), minslist, maxlist, facecolor='lightgreen', alpha=0.5)
@@ -202,18 +206,19 @@ def compare_nonshifted_minmax(bird):
     pl.show()
 
 
-def normalize_running_means(shifted_list, unshifted_list):
+def normalize_surface(shifted_list, unshifted_list):
     standard = sum(unshifted_list)
     total_in_shifted_list = sum(shifted_list)
     for i in range(0, len(shifted_list)):
-        print(shifted_list[i])
         shifted_list[i] = (shifted_list[i] * standard) / total_in_shifted_list
-        print(shifted_list[i])
     return shifted_list
 
 
 
 if __name__ == '__main__':
+    bird_list = ['b73', 'b174', 'b179', 'DB4', 'DB20', 'DB30']
+    print("Shifts: b73-FAST, b174-FAST, b179-SOFT, DB4-FAST, DB20-FAST, DB30-SLOW")
+
     input_bird = raw_input(("Which bird do you want to analyze(b73, b174, b179, DB4, DB20, DB30): \n"))
     input_string = raw_input(("Which graph do you want to plot? for unshifted(typ unshifted), shifted days(typ shifted), to compare shifted and unshifted(typ compare) \n"))
 
@@ -226,11 +231,15 @@ if __name__ == '__main__':
     if input_string == "compare":
         plot_compare(input_bird)
 
-    if input_string == "compare_seperateshifted":
-        compare_seperateshifted(input_bird)
+    if input_string == "compare_onlyaverage_all":
+        for bird in bird_list:
+            plot_compare(bird)
 
-    if input_string == "compare_nonshifted_minmax":
-        compare_nonshifted_minmax(input_bird)
+    if input_string == "compare_seperateshifted_all":
+        for bird in bird_list:
+            compare_seperateshifted(bird)
 
-    print("Shifts: b73-FAST, b174-FAST, b179-SOFT, DB4-FAST, DB20-FAST, DB30-SLOW")
+    if input_string == "compare_nonshifted_minmax_all":
+        for bird in bird_list:
+            compare_nonshifted_minmax(bird)
 
