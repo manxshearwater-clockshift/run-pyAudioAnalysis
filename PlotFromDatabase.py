@@ -152,12 +152,14 @@ def compare_seperateshifted(bird):
     avlists = avlist(total_list)
     pl.plot(list(range(0, len(avlists))), avlists, "green", label="Average unshifted days", linewidth=2.5)
 
+    new_total_list = []
     for day in range(22, 25):
         no_running_mean_list = one_day_shuffles_per_hour(bird, day)
         running_mean_list = running_mean(no_running_mean_list, 2)
-        total_list.append(running_mean_list)
-    avlists = avlist(total_list)
-    pl.plot(list(range(0, len(avlists))), avlists, "red", label="Average shifted days", linewidth=2.5)
+        new_total_list.append(running_mean_list)
+    avlistst = avlist(new_total_list)
+    running_mean_list_normalized_surface_l = normalize_surface(avlistst, avlists)
+    pl.plot(list(range(0, len(running_mean_list_normalized_surface_l))), running_mean_list_normalized_surface_l, "red", label="Average shifted days", linewidth=2.5)
 
     colors = {22: 'dimgray', 23: 'royalblue', 24:'black'}
     for day in range(22, 25):

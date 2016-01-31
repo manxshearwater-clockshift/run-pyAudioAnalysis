@@ -17,8 +17,8 @@ def create_db():
     conn = sqlite3.connect(DB_NAME)
     c = conn.cursor()
     c.execute("SELECT * FROM sqlite_master WHERE type='table' AND name='TABLE_BIRDS'")
-    #if c.arraysize < 2:
-    c.execute("CREATE TABLE TABLE_BIRDS (BIRD TEXT, YEAR INTEGER, MONTH INTEGER, DAY INTEGER, HOUR INTEGER, "
+    if c.arraysize < 2:
+        c.execute("CREATE TABLE TABLE_BIRDS (BIRD TEXT, YEAR INTEGER, MONTH INTEGER, DAY INTEGER, HOUR INTEGER, "
                   "MINUTE INTEGER, SECOND INTEGER, CLASS INTEGER)")
     conn.commit()
     conn.close()
@@ -43,7 +43,7 @@ def csv_to_db(csvfilename, bird):
         conn.commit()
         conn.close()
 
-def get_one_day(bird_table_name, daynr):
+def get_one_day(daynr):
     conn = sqlite3.connect(DB_NAME)
     c = conn.cursor()
     c.execute("SELECT class FROM TABLE_BIRDS WHERE DAY=?", (daynr, ))

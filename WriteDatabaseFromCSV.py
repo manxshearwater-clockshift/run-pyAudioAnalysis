@@ -11,11 +11,11 @@ parser.add_argument("--create", help="create a new table",
 args = parser.parse_args()
 
 def create_db():
-    dh.drop_db("TABLE_BIRDS")
+    dh.drop_db()
     dh.create_db()
 
 def add_to_db(csvfile, birdname):
-    dh.csv_to_db("b73.csv", "b73")
+    dh.csv_to_db(csvfile, birdname)
 
 if __name__ == '__main__':
     if args.create == "true":
