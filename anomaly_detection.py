@@ -62,10 +62,10 @@ def one_day_shuffles_per_hour(bird, day):
 def shift_list(list_, n, sort_shift):
     # if fast biological clock back
     if sort_shift == "fast":
-        shifted_list = np.roll(list_, n)
+        shifted_list = np.roll(list_, -n)
     # if slow biological clock forward
     elif sort_shift == "slow":
-        shifted_list = np.roll(list_, -n)
+        shifted_list = np.roll(list_,n)
     else:
         print "something went wrong"
 
